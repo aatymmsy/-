@@ -1,0 +1,23 @@
+{
+  "name": "perch-desktop",
+  "version": "0.2.0",
+  "private": true,
+  "description": "A local-first AI companion that remembers conversations and gets desktop work done.",
+  "type": "module",
+  "license": "MPL-2.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "desktop": "node src/launch.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:ui": "playwright test",
+    "check": "node scripts/check.mjs",
+    "demo": "node scripts/demo-server.mjs",
+    "build:windows": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-windows.ps1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

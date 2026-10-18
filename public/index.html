@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="agent-token" content="__AGENT_TOKEN__"><title>栖 · Perch</title><link rel="icon" href="/icon.ico" sizes="any"><link rel="apple-touch-icon" href="/icon-256.png"><link rel="manifest" href="/manifest.webmanifest"><link rel="stylesheet" href="/style.css"><script src="/chat-display.js" defer></script><script src="/conversation-starter.js" defer></script><script src="/app.js" defer></script></head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">栖</span><div><strong>PERCH / DESKTOP</strong><small>让对话延续，让工作落地</small></div></div>
+    <div class="section-label">存档空间 <button id="add-slot" class="icon" title="新建存档">＋</button></div>
+    <select id="slot-select" aria-label="当前存档"></select>
+    <div class="slot-actions"><button id="import-save">导入空间</button><button id="export-save">导出</button></div>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+    <button id="new-session" class="primary new-session">＋ 新会话</button>
+    <div class="section-label">会话记录 <span id="session-count"></span></div>
+    <nav id="sessions"></nav>
+    <div class="side-bottom"><button id="persona-button">人设与作者</button><button id="settings-button">模型与权限 <span>↗</span></button><button id="sync-button">局域网同步 <span id="sync-dot">○</span></button></div>
+  </aside>
+  <main>
+    <header><div><span class="eyebrow">YOUR LOCAL WORKSPACE</span><h1 id="session-title">开始一次新的交流</h1><p id="session-subtitle">聊天 · 日记 · 记忆 · 文件</p></div><div class="header-actions"><button id="diary-list">日记 <span id="diary-count">0</span></button><button id="memory-list">记忆</button><button id="finish-session">结束并写日记</button></div></header>
+    <section class="cache-bar" aria-label="缓存统计"><div><span class="live-dot"></span><strong>输入缓存</strong><small id="prefix-status">新会话后固定前缀</small></div><div><span>本次命中</span><strong id="cache-last">未上报</strong></div><div><span>累计命中</span><strong id="cache-total">未上报</strong></div><div><span>已缓存 / 已统计输入</span><strong id="cache-tokens">—</strong></div><div><span>测量覆盖</span><strong id="cache-coverage">0 / 0 次</strong></div></section>
+    <p id="cache-note" class="cache-note" role="status">固定内容优先复用；首次请求的缓存由服务商建立。</p>
+    <div id="token-usage" class="token-usage" aria-live="polite"></div>
+    <details class="context-details"><summary>上下文详情</summary><div id="context-info">发送消息后显示实际发送的上下文大小。</div></details>
+    <div class="chat-scroll" id="chat-scroll"><div id="messages"><div class="empty"><div class="empty-symbol">栖</div><h2>一个空间，接住交流与工作。</h2><p>连接你喜欢的模型，或者导入已有的 JSON 空间。<br>每个会话保留独立的人设快照和完整记录。</p><button id="welcome-settings" class="primary">配置模型</button></div></div></div>
+    <div class="composer-area"><div id="artifacts"></div><section id="approval-panel" class="approval-panel" aria-label="待确认操作" aria-live="polite" hidden></section><div class="status-line"><span id="status" role="status">准备就绪</span><button id="retry" hidden>重试未完成任务</button><button id="stop" hidden>停止</button></div><form id="chat-form"><div id="image-preview" class="image-preview"></div><input type="file" id="image-file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden><textarea id="chat-input" rows="3" placeholder="聊一聊，或交给我一项工作…" aria-label="消息"></textarea><div class="composer-footer"><button type="button" id="attach-image">＋ 图片</button><select id="permission-select" aria-label="操作权限" aria-describedby="permission-label"><option value="ask">操作前询问</option><option value="full">完全访问</option><option value="workspace">仅工作目录</option></select><div class="composer-actions"><button type="button" id="first-speak" title="没想好聊什么？让当前角色先开启一个话题，草稿会保留。">先让模型说话</button><button type="submit" id="send" class="primary">发送 ↑</button></div></div><div id="permission-label" class="permission-hint">修改文件、访问外部文件和执行命令前询问</div></form><p class="composer-note">Enter 发送 · Shift + Enter 换行 · 可粘贴或拖入图片 <span>本地保存，按需调用你配置的模型</span></p></div>
+  </main>
+  <dialog id="settings-dialog"><form id="settings-form">
+    <div class="dialog-heading"><div><span class="eyebrow">CONNECTION</span><h2>模型与工作空间</h2></div><button type="button" class="icon close">×</button></div>
+    <p class="muted">选择厂商后自动填写地址，也可以修改为自己的中转接口。操作权限对当前会话的下一次工具操作生效；其他配置在新会话中生效。</p>
+    <label>模型厂商<select name="provider" id="provider-select" aria-describedby="provider-note"></select></label>
+    <p id="provider-note" class="muted field-note"></p>
+    <label>接口地址<input name="baseURL" required placeholder="https://…/v1" spellcheck="false"></label>
+    <label>API Key<input type="password" name="apiKey" autocomplete="off" placeholder="填写当前厂商的 API Key"></label>
+    <section class="model-section" aria-labelledby="model-heading">
+      <div class="model-heading"><div><h3 id="model-heading">模型选择</h3><p id="model-sync-status" class="muted" role="status">点击同步，获取当前接口可用的模型。</p></div><button type="button" id="sync-models">↓ 同步模型</button></div>
+      <label for="model-input">实际请求模型</label>
+      <div class="model-input-row"><input name="model" id="model-input" placeholder="从列表选择，或手动填写模型 ID" required spellcheck="false"><button type="button" id="model-picker-toggle" aria-label="展开模型列表" aria-expanded="false" aria-controls="model-picker">⌄</button></div>
+      <div id="model-picker" hidden><input id="model-search" placeholder="搜索模型名称或 ID…" aria-label="搜索模型" autocomplete="off"><select id="model-options" size="6" aria-label="可选模型列表"></select><p id="model-match-count" class="muted field-note"></p></div>
+    </section>
+    <div class="two"><label>单次最大输出 token<input type="number" name="maxTokens" min="256" max="131072"></label><label>输出长度参数<select name="tokenParameter"><option>max_tokens</option><option>max_completion_tokens</option></select></label></div>
+    <label>工作目录<input name="workspace" required></label><label>操作权限<select name="permissions"><option value="ask">操作前询问：写文件、读取外部文件、执行命令逐次批准</option><option value="full">完全访问：直接访问本机文件、运行命令和联网</option><option value="workspace">仅工作目录：允许目录内读写，关闭命令工具</option></select></label><p class="muted">普通聊天、模型请求和应用自身的存档、日记、记忆保存不逐次询问。完全访问仍受 Windows 账户权限限制。切换模式不自动批准已在等待确认的操作，也不会撤销已经开始的操作。</p>
+    <details><summary>高级参数</summary><div class="two"><label>聊天历史预算（字符）<input type="number" name="historyChars" min="4000" max="100000"></label><p class="muted">较早记录按需回查，完整聊天仍保存在本机；当前消息与正在执行的工具操作保持完整。修改后新会话生效。</p><label>上下文字符保护上限<input type="number" name="maxContextChars" min="10000" max="4000000"></label><label>请求超时（毫秒）<input type="number" name="timeoutMs" min="1000" max="600000"></label></div><label>Temperature（空白则不传）<input type="number" name="temperature" step="0.1" min="0" max="2"></label><label>服务商扩展参数 JSON<textarea name="extraBody" rows="4" spellcheck="false"></textarea></label><p class="muted">如服务商支持，可在此设置缓存参数。数据以实际返回的缓存 token 为准；不靠填充提示词提高百分比。</p><label class="check"><input type="checkbox" name="clearKey">清除已保存的密钥</label></details>
+    <p class="form-error"></p><button type="submit" class="primary">保存配置</button>
+  </form></dialog>
+  <dialog id="persona-dialog"><form id="persona-form"><div class="dialog-heading"><h2>人设与日记作者</h2><button type="button" class="icon close">×</button></div><label>空间名称<input name="name" required></label><p id="persona-current" class="muted"></p><label>存档人设卡（覆盖为空时生效）<select name="personaKey"></select></label><p id="persona-card-info" class="muted"></p><details><summary>查看选中卡片正文</summary><pre id="persona-card-preview" class="persona-preview"></pre></details><label>人设覆盖（可选）<textarea name="persona" rows="8" placeholder="留空则使用上方人设卡。双人角色可在此填写完整设定，并指定日记由 B 写，或 A、B 分别写一段。"></textarea></label><p class="muted">默认依照存档的服装、好感度选择人设。保存后新开会话，旧记录保留；原始人设字段不变。</p><p class="form-error"></p><button type="submit" class="primary">保存并新开会话</button></form></dialog>
+  <dialog id="content-dialog"><div class="dialog-heading"><h2 id="content-title"></h2><button class="icon close">×</button></div><div id="content-list" tabindex="0"></div><div class="content-footer"><button type="button" class="close">关闭</button></div></dialog>
+  <dialog id="sync-dialog"><div class="dialog-heading"><div><span class="eyebrow">LOCAL NETWORK</span><h2>局域网同步</h2></div><button class="icon close">×</button></div><p class="muted">按相同槽位号自动同步，采用日记较完整一端的存档，核对最近五篇并按生成时间补齐不同日记。手机需打开游戏并停在主菜单。</p><button id="sync-now" class="primary">同步</button><p id="sync-status" role="status" class="muted"></p><div id="sync-info"></div><details id="sync-advanced"><summary>首次配对与连接设置</summary><div class="sync-actions"><button id="sync-start">开启入口</button><button id="sync-renew">刷新配对码</button><button id="sync-stop">关闭入口</button></div><p class="muted">首次在手机“电脑同步”中填写地址与六位配对码，以后可直接同步。写入前两端自动备份。</p><div id="sync-devices"></div><div id="sync-conflicts"></div></details></dialog>
+  <div id="toast" role="alert" hidden></div>
+</body></html>

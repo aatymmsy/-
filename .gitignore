@@ -1,0 +1,17 @@
+node_modules/
+data/
+outputs/
+work/
+dist/
+test-results/
+playwright-report/
+*.log
+*.sqlite*
+*.db
+.env
+.env.*
+config.json
+*.exe
+*.zip
+Thumbs.db
+.DS_Store

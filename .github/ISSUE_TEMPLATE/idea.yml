@@ -1,0 +1,15 @@
+name: Feature idea / 功能想法
+description: Tell us about a real conversation or workflow.
+title: '[Idea] '
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario / 使用场景
+      description: What are you trying to do, and where does the current experience fall short?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior / 希望的体验

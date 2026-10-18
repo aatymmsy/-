@@ -1,0 +1,23 @@
+name: Bug report / 问题反馈
+description: Help us reproduce a concrete problem.
+title: '[Bug] '
+body:
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction / 复现步骤
+      description: Include expected and actual behavior. Remove keys, private conversations and personal paths.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment / 运行环境
+      placeholder: Windows 11, Node.js 24, model/provider, commit
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / 日志或截图
+      description: Share only redacted, non-sensitive information.
